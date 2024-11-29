@@ -1,0 +1,5 @@
+.mvn/jvm.config
+.mvn/maven.config
+.vscode/settings.json
+.env
+target/
