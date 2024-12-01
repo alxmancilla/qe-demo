@@ -10,6 +10,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.CreateCollectionOptions;
 import com.mongodb.client.model.CreateEncryptedCollectionParams;
+import com.mongodb.client.result.InsertManyResult;
 import com.mongodb.client.result.InsertOneResult;
 import com.mongodb.client.vault.ClientEncryption;
 import com.mongodb.client.vault.ClientEncryptions;
@@ -27,6 +28,8 @@ import org.bson.codecs.pojo.PojoCodecProvider;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import static com.mongodb.MongoClientSettings.getDefaultCodecRegistry;
@@ -39,6 +42,7 @@ public class QueryableEncryptionTutorial {
         String kmsProviderName = "local";
 
         String uri = QueryableEncryptionHelpers.getEnv("MONGODB_URI"); // Your connection URI
+        System.out.println("MONGODB_URI: " + uri);
 
         String keyVaultDatabaseName = "encryption";
         String keyVaultCollectionName = "__keyVault";
@@ -54,16 +58,14 @@ public class QueryableEncryptionTutorial {
 
         Map<String, Map<String, Object>> kmsProviderCredentials = QueryableEncryptionHelpers.getKmsProviderCredentials(kmsProviderName);
         BsonDocument customerMasterKeyCredentials = QueryableEncryptionHelpers.getCustomerMasterKeyCredentials(kmsProviderName);
-        System.out.println("customerMasterKeyCredentials: " + customerMasterKeyCredentials);
+       // System.out.println("customerMasterKeyCredentials: " + customerMasterKeyCredentials);
         AutoEncryptionSettings autoEncryptionSettings = QueryableEncryptionHelpers.getAutoEncryptionOptions(keyVaultNamespace, kmsProviderCredentials);
-        System.out.println("autoEncryptionSettings: " + autoEncryptionSettings);
 
         // start-create-client
         MongoClientSettings clientSettings = MongoClientSettings.builder()
                 .applyConnectionString(new ConnectionString(uri))
                 .autoEncryptionSettings(autoEncryptionSettings)
                 .build();
-        System.out.println("clientSettings: " + clientSettings);
 
         try (MongoClient encryptedClient = MongoClients.create(clientSettings)) {
             // end-create-client
@@ -117,21 +119,26 @@ public class QueryableEncryptionTutorial {
             // start-insert-document
             MongoDatabase encryptedDb = encryptedClient.getDatabase(encryptedDatabaseName).withCodecRegistry(pojoCodecRegistry);
             MongoCollection<Patient> collection = encryptedDb.getCollection(encryptedCollectionName, Patient.class);
+            
+            List<Patient> patients = new LinkedList<Patient>();
+            int counter= 100;
+            for (int i=0; i<100; i++){
+                PatientBilling patientBilling = new PatientBilling("Visa", "4111111111111"+(counter+i));
+                PatientRecord patientRecord = new PatientRecord("987-65-4"+(counter+i), patientBilling, 1500 + (i%7)*(i));
+                Patient patientDocument = new Patient("Jon Doe"+i, patientRecord);
+                patients.add(patientDocument);
+            }
 
-            PatientBilling patientBilling = new PatientBilling("Visa", "4111111111111111");
-            PatientRecord patientRecord = new PatientRecord("987-65-4320", patientBilling, 1500);
-            Patient patientDocument = new Patient("Jon Doe", patientRecord);
-
-            InsertOneResult result = collection.insertOne(patientDocument);
+            InsertManyResult result = collection.insertMany(patients);
             // end-insert-document
             if (result.wasAcknowledged()) {
-                System.out.println("Successfully inserted the patient document.");
+                System.out.println("Successfully inserted 100 documents.");
             }
 
             // start-find-document
             Patient findResult = collection.find(
                 new BsonDocument()
-                        .append("patientRecord.ssn", new BsonString("987-65-4320")))
+                        .append("patientRecord.ssn", new BsonString("987-65-4120")))
                         .first();
              
             System.out.println(findResult);

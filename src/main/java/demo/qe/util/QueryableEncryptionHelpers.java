@@ -4,6 +4,7 @@ package demo.qe.util;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +28,6 @@ public final class QueryableEncryptionHelpers {
     public static Map<String, Map<String, Object>> getKmsProviderCredentials(String kmsProviderName) throws Exception {
         System.out.println("kmsProviderName: " +kmsProviderName);
         if (kmsProviderName.equals("local")) {
-            System.out.println("local kms ");
             // Reuse the key from the customer-master-key.txt file if it exists
             if (!new File("./customer-master-key.txt").isFile()) {
                 // start-generate-local-key
@@ -37,8 +37,6 @@ public final class QueryableEncryptionHelpers {
                     stream.write(localCustomerMasterKey);
 
                     // ...
-                    System.out.println("localCustomerMasterKey: " + localCustomerMasterKey);
-
                     // end-generate-local-key
                 } catch (Exception e) {
                     throw new Exception("Unable to write Customer Master Key file due to the following error:" + e.getMessage());
@@ -54,7 +52,7 @@ public final class QueryableEncryptionHelpers {
             } catch (Exception e) {
                 throw new Exception("Unable to read the Customer Master Key due to the following error: " + e.getMessage());
             }
-            System.out.println("localCustomerMasterKey: " + localCustomerMasterKey);
+            System.out.println("localCustomerMasterKey: " + Base64.getEncoder().encodeToString(localCustomerMasterKey) );
             Map<String, Object> keyMap = new HashMap<String, Object>();
             keyMap.put("key", localCustomerMasterKey);
 
