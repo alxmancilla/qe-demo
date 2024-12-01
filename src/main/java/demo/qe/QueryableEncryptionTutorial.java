@@ -26,6 +26,7 @@ import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 import static com.mongodb.MongoClientSettings.getDefaultCodecRegistry;
@@ -56,6 +57,7 @@ public class QueryableEncryptionTutorial {
         System.out.println("customerMasterKeyCredentials: " + customerMasterKeyCredentials);
         AutoEncryptionSettings autoEncryptionSettings = QueryableEncryptionHelpers.getAutoEncryptionOptions(keyVaultNamespace, kmsProviderCredentials);
         System.out.println("autoEncryptionSettings: " + autoEncryptionSettings);
+
         // start-create-client
         MongoClientSettings clientSettings = MongoClientSettings.builder()
                 .applyConnectionString(new ConnectionString(uri))

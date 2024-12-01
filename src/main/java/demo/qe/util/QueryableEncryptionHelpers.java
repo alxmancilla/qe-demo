@@ -54,6 +54,7 @@ public final class QueryableEncryptionHelpers {
             } catch (Exception e) {
                 throw new Exception("Unable to read the Customer Master Key due to the following error: " + e.getMessage());
             }
+            System.out.println("localCustomerMasterKey: " + localCustomerMasterKey);
             Map<String, Object> keyMap = new HashMap<String, Object>();
             keyMap.put("key", localCustomerMasterKey);
 
@@ -113,6 +114,7 @@ public final class QueryableEncryptionHelpers {
         if (kmsProviderName == "local" || kmsProviderName == "kmip") {
             // start-kmip-local-cmk-credentials
             BsonDocument customerMasterKeyCredentials = new BsonDocument();
+            customerMasterKeyCredentials.put("provider", new BsonString(kmsProviderName));
             // end-kmip-local-cmk-credentials
             return customerMasterKeyCredentials;
         } else if (kmsProviderName == "aws") {
@@ -153,6 +155,7 @@ public final class QueryableEncryptionHelpers {
         // start-auto-encryption-options
         Map<String, Object> extraOptions = new HashMap<String, Object>();
         extraOptions.put("cryptSharedLibPath", getEnv("SHARED_LIB_PATH")); // Path to your Automatic Encryption Shared Library
+        extraOptions.put("cryptSharedLibRequired", Boolean.TRUE);
 
         AutoEncryptionSettings autoEncryptionSettings = AutoEncryptionSettings.builder()
                 .keyVaultNamespace(keyVaultNamespace)
