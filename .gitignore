@@ -3,3 +3,4 @@
 .vscode/settings.json
 .env
 target/
+customer-master-key.txt
