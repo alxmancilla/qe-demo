@@ -20,8 +20,10 @@ import demo.qe.models.PatientRecord;
 import demo.qe.util.QueryableEncryptionHelpers;
 import org.bson.BsonArray;
 import org.bson.BsonDocument;
+import org.bson.BsonInt32;
 import org.bson.BsonNull;
 import org.bson.BsonString;
+import org.bson.Document;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
@@ -84,7 +86,18 @@ public class QueryableEncryptionTutorial {
                             new BsonDocument()
                                     .append("keyId", new BsonNull())
                                     .append("path", new BsonString("patientRecord.billing"))
-                                    .append("bsonType", new BsonString("object")))));
+                                    .append("bsonType", new BsonString("object")),
+                            new BsonDocument()
+                                    .append("keyId", new BsonNull())
+                                    .append("path", new BsonString("patientRecord.billAmount"))
+                                    .append("bsonType", new BsonString("int"))
+                                    .append("queries", new BsonDocument()
+                                        .append("queryType", new BsonString("range"))
+                                        .append("sparsity", new BsonInt32(1))
+                                        .append("trimFactor", new BsonInt32(4))
+                                        .append("min", new BsonInt32(100))
+                                        .append("max", new BsonInt32(2000))
+                ))));
             // end-encrypted-fields-map
 
             // start-client-encryption
@@ -121,10 +134,10 @@ public class QueryableEncryptionTutorial {
             MongoCollection<Patient> collection = encryptedDb.getCollection(encryptedCollectionName, Patient.class);
             
             List<Patient> patients = new LinkedList<Patient>();
-            int counter= 100;
-            for (int i=0; i<100; i++){
+            int counter= 10;
+            for (int i=0; i<10; i++){
                 PatientBilling patientBilling = new PatientBilling("Visa", "4111111111111"+(counter+i));
-                PatientRecord patientRecord = new PatientRecord("987-65-4"+(counter+i), patientBilling, 1500 + (i%7)*(i));
+                PatientRecord patientRecord = new PatientRecord("987-65-4"+(counter+i), patientBilling, 500 + (i%7)*(i));
                 Patient patientDocument = new Patient("Jon Doe"+i, patientRecord);
                 patients.add(patientDocument);
             }
@@ -138,11 +151,20 @@ public class QueryableEncryptionTutorial {
             // start-find-document
             Patient findResult = collection.find(
                 new BsonDocument()
-                        .append("patientRecord.ssn", new BsonString("987-65-4120")))
+                        .append("patientRecord.ssn", new BsonString("987-65-410")))
                         .first();
              
             System.out.println(findResult);
             // end-find-document
+
+            // start-query-range
+                Document filter = new Document("patientRecord.billAmount",
+                new Document("$gt", 500).append("$lt", 600));
+                findResult = collection.find(filter).first();
+
+                System.out.println(findResult);
+                // end-query-range
+
         }
     }
 }
