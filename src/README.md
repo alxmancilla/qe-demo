@@ -50,12 +50,6 @@ mvn exec:java -Dexec.mainClass="demo.qe.QueryableEncryptionTutorial"
 - **Main Application**:
   - `QueryableEncryptionTutorial`: The main class that sets up the MongoDB client with queryable encryption, creates an encrypted collection, inserts sample documents, and performs queries on the encrypted data.
 
-## Testing
-
-To run the unit tests, use the following command:
-```sh
-mvn test
-```
 
 ## License
 
