@@ -108,10 +108,7 @@ public class QueryableEncryptionTutorial {
             Patient patient10th = null;
             int counter= 100;
             for (int i=0; i<100; i++){
-                PatientBilling patientBilling = new PatientBilling("Visa", DataGenerator.genCCN());
-                PatientRecord patientRecord = new PatientRecord(DataGenerator.genSSN(), patientBilling, 400 + (i%10)*(i));
-                Patient patientDocument = new Patient(DataGenerator.genFullName(), patientRecord);
-                patients.add(patientDocument);
+                patients.add(DataGenerator.genPatient());
             }
             patient10th = patients.get(10);
             System.out.println("patient10th: " + patient10th);
@@ -134,7 +131,7 @@ public class QueryableEncryptionTutorial {
 
             // start-query-range
                 Document filter = new Document("patientRecord.billAmount",
-                new Document("$gt", patient10th.getPatientRecord().billAmount - 10).append("$lt", patient10th.getPatientRecord().billAmount + 10));
+                new Document("$gt", 500).append("$lt", 900));
                 findResult = collection.find(filter).first();
 
                 System.out.println(findResult);

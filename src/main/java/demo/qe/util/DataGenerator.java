@@ -2,6 +2,10 @@ package demo.qe.util;
 
 import java.util.Random;
 
+import demo.qe.models.Patient;
+import demo.qe.models.PatientBilling;
+import demo.qe.models.PatientRecord;
+
 public class DataGenerator {
 
     static String[] firstNames = {"John", "Jane", "Alice", "Bob", "Charlie", "David", "Eve", "Frank", "Grace", "Henry"};
@@ -10,7 +14,7 @@ public class DataGenerator {
     private DataGenerator() {
     }
 
-    public static String generateRandomString(int length) {
+    private static String generateRandomString(int length) {
         String characters = "0123456789";
         StringBuilder sb = new StringBuilder(length);
         Random random = new Random();
@@ -20,14 +24,21 @@ public class DataGenerator {
         return sb.toString();
     }
 
-    public static String genFullName() {
+    private static String genFullName() {
         Random random = new Random();
         return firstNames[random.nextInt(firstNames.length)] + " " + lastNames[random.nextInt(lastNames.length)];
     }
-    public static String genSSN() {
+    private static String genSSN() {
         return "987" + "-" + generateRandomString(2) + "-" + generateRandomString(4);
     }
-    public static String genCCN() {
+
+    private static String genCCN() {
         return "439" + "-" + generateRandomString(4) + "-" + generateRandomString(4)+ "-" + generateRandomString(4);
+    }
+
+    public static Patient genPatient() {
+        PatientBilling patientBilling = new PatientBilling("Visa", DataGenerator.genCCN());
+        PatientRecord patientRecord = new PatientRecord(DataGenerator.genSSN(), patientBilling, new Random().nextInt(1800) + 200);
+        return new Patient(DataGenerator.genFullName(), patientRecord);
     }
 }
