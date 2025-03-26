@@ -2,42 +2,6 @@
 
 This project demonstrates the use of MongoDB's Queryable Encryption feature with a sample medical records application. The application uses various KMS providers to encrypt sensitive data fields and perform queries on the encrypted data.
 
-## Project Structure
-
-```
-.
-├── .env
-├── .gitignore
-├── customer-master-key.txt
-├── pom.xml
-├── .mvn/
-│   ├── jvm.config
-│   └── maven.config
-├── .vscode/
-│   └── settings.json
-├── src/
-│   ├── main/
-│   │   └── java/
-│   │       └── demo/
-│   │           └── qe/
-│   │               ├── QueryableEncryptionTutorial.java
-│   │               ├── models/
-│   │               │   ├── Patient.java
-│   │               │   ├── PatientBilling.java
-│   │               │   └── PatientRecord.java
-│   │               └── util/
-│   │                   └── QueryableEncryptionHelpers.java
-│   └── test/
-│       └── java/
-│           └── demo/
-│               └── qe/
-│                   └── AppTest.java
-└── target/
-    ├── classes/
-    ├── generated-sources/
-    └── test-classes/
-```
-
 ## Prerequisites
 
 - Java 17
