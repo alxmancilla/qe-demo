@@ -32,10 +32,11 @@ public class SchemaMapper {
                                     .append("bsonType", new BsonString("int"))
                                     .append("queries", new BsonDocument()
                                         .append("queryType", new BsonString("range"))
-                                        .append("sparsity", new BsonInt32(1))
+                                        .append("sparsity", new BsonInt32(2))
                                         .append("trimFactor", new BsonInt32(4))
-                                        .append("min", new BsonInt32(100))
-                                        .append("max", new BsonInt32(2000))
+                                        .append("contention", new BsonInt32(5))
+                                        .append("min", new BsonInt32(0))
+                                        .append("max", new BsonInt32(100000))
                 ))));
     }
 

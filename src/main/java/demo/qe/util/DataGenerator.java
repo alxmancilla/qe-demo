@@ -38,7 +38,7 @@ public class DataGenerator {
 
     public static Patient genPatient() {
         PatientBilling patientBilling = new PatientBilling("Visa", DataGenerator.genCCN());
-        PatientRecord patientRecord = new PatientRecord(DataGenerator.genSSN(), patientBilling, new Random().nextInt(1800) + 200);
+        PatientRecord patientRecord = new PatientRecord(DataGenerator.genSSN(), patientBilling, new Random().nextInt(80000));
         return new Patient(DataGenerator.genFullName(), patientRecord);
     }
 }

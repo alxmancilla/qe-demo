@@ -131,7 +131,7 @@ public class QueryableEncryptionTutorial {
 
             // start-query-range
                 Document filter = new Document("patientRecord.billAmount",
-                new Document("$gt", 500).append("$lt", 900));
+                new Document("$gt", 2500).append("$lt", 7500));
                 findResult = collection.find(filter).first();
 
                 System.out.println(findResult);
