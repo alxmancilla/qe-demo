@@ -60,20 +60,16 @@ public class QueryableEncryptionTutorial {
        // System.out.println("customerMasterKeyCredentials: " + customerMasterKeyCredentials);
         AutoEncryptionSettings autoEncryptionSettings = QueryableEncryptionHelpers.getAutoEncryptionOptions(keyVaultNamespace, kmsProviderCredentials);
 
-        // start-create-client
         MongoClientSettings clientSettings = MongoClientSettings.builder()
                 .applyConnectionString(new ConnectionString(uri))
                 .autoEncryptionSettings(autoEncryptionSettings)
                 .build();
 
         try (MongoClient encryptedClient = MongoClients.create(clientSettings)) {
-            // end-create-client
             encryptedClient.getDatabase(keyVaultDatabaseName).getCollection(keyVaultCollectionName).drop();
             encryptedClient.getDatabase(encryptedDatabaseName).getCollection(encryptedCollectionName).drop();
 
-            // start-encrypted-fields-map
             BsonDocument encryptedFieldsMap = SchemaMapper.getEncryptedFieldsMap();
-            // end-encrypted-fields-map
 
             // start-client-encryption
             ClientEncryptionSettings clientEncryptionSettings = ClientEncryptionSettings.builder()
