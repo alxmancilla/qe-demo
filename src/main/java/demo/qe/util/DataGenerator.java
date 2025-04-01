@@ -1,5 +1,9 @@
 package demo.qe.util;
 
+import java.time.LocalDate;
+import java.time.Year;
+import java.time.ZoneOffset;
+import java.util.Date;
 import java.util.Random;
 
 import demo.qe.models.Patient;
@@ -24,6 +28,38 @@ public class DataGenerator {
         return sb.toString();
     }
 
+    public static Date genRandomDateOfBirth() {
+        Random random = new Random();
+
+        int minYear = 1960;
+        int maxYear = LocalDate.now().getYear() - 18;
+        int year = random.nextInt(maxYear - minYear + 1) + minYear;
+
+    
+        int month = random.nextInt(12) + 1;
+    
+        int maxDay;
+        switch (month) {
+                case 2:
+                    maxDay = Year.isLeap(year) ? 29 : 28;
+                    break;
+                case 4:
+                case 6:
+                case 9:
+                case 11:
+                    maxDay = 30;
+                    break;
+                default:
+                    maxDay = 31;
+                    break;
+            }
+        int day = random.nextInt(maxDay) + 1;
+
+        return Date.from( LocalDate.of(year, month, day).atStartOfDay().toInstant(ZoneOffset.UTC));
+
+    }
+
+
     private static String genFullName() {
         Random random = new Random();
         return firstNames[random.nextInt(firstNames.length)] + " " + lastNames[random.nextInt(lastNames.length)];
@@ -39,6 +75,6 @@ public class DataGenerator {
     public static Patient genPatient() {
         PatientBilling patientBilling = new PatientBilling("Visa", DataGenerator.genCCN());
         PatientRecord patientRecord = new PatientRecord(DataGenerator.genSSN(), patientBilling, new Random().nextInt(80000));
-        return new Patient(DataGenerator.genFullName(), patientRecord);
+        return new Patient(DataGenerator.genFullName(), DataGenerator.genRandomDateOfBirth(), patientRecord);
     }
 }

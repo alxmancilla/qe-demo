@@ -16,6 +16,10 @@ public class SchemaMapper {
     public static BsonDocument getEncryptedFieldsMap() { 
         return new BsonDocument().append("fields",
                     new BsonArray(Arrays.asList(
+                        new BsonDocument()
+                                .append("keyId", new BsonNull())
+                                .append("path", new BsonString("dateOfBirth"))
+                                .append("bsonType", new BsonString("date")),
                             new BsonDocument()
                                     .append("keyId", new BsonNull())
                                     .append("path", new BsonString("patientRecord.ssn"))
